@@ -1,0 +1,9 @@
+[package]
+name = "rust"
+version = "0.1.0"
+
+[dependencies]
+time = ""
+
+[profile.dev]
+opt-level = 3
