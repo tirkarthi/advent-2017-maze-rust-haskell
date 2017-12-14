@@ -21,8 +21,8 @@ Haskell
 
     $ stack build --verbosity silent && stack exec haskell
     reading file into bytestring took 209.75 us
-    parsing 1058 lines took 58.78 us
-    25608482, is the answer, it took 91.48 ms
+    parsing 1058 lines took 47.76 us
+    25608482, is the answer, it took 90.28 ms
 
 (Both programs have been ran until they repeat a lower bound.)
 
@@ -44,8 +44,7 @@ without the annotations is inferred as an `Integer`, which is about **5x
 slower. GHC warns about this.**
 
 Using the `mapM (\(x, line) -> ...) (zip [0..] (S.lines ...))` pattern
-is less efficient than the more direct `mapLinesM`. Adding `INLINE`
-also speeds it up, fairly obviously.
+is less efficient than the more direct `mapLinesM`.
 
 I haven't tried compiling via LLVM. I'm unable to get the backend to
 work on OS X. Someone else can try that.
