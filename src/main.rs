@@ -33,7 +33,7 @@ fn main() {
     tm = time::now();
     let mut counter = 0i64; //Kay is the array containing the maze
     let mut ind = 0i32; //ind is current index
-    while ind < kay.len() as i32 {
+    while ind < kay.len() as i32 && ind >= 0 {
         counter += 1;
         let i = ind as usize; //temporarary helper
         let curr = kay[i];

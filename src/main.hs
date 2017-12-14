@@ -24,17 +24,18 @@ main = do
 
   start2 <- getTime Monotonic
   let while !(counter::Int) !(ind::Int) = do
-        if ind < fromIntegral (MV.length kay)
-          then let i = fromIntegral ind
-               in do curr <- MV.read kay i
-                     MV.write
-                       kay
-                       i
-                       (if curr >= 3
-                          then curr - 1
-                          else curr + 1)
-                     while (counter + 1) (ind + curr)
-          else pure counter
+        if ind >= fromIntegral (MV.length kay) || ind < 0
+          then pure counter
+          else
+            let i = fromIntegral ind
+            in do curr <- MV.read kay i
+                  MV.write
+                    kay
+                    i
+                    (if curr >= 3
+                       then curr - 1
+                       else curr + 1)
+                  while (counter + 1) (ind + curr)
   !counter <- while 0 0
   end2 <- getTime Monotonic
   fprint (int % ", is the answer, it took " % timeSpecs % "\n") counter start2 end2
