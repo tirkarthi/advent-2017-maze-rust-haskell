@@ -4,7 +4,6 @@ module Main (main) where
 import           Control.Monad
 import qualified Data.ByteString as S
 import qualified Data.ByteString.Unsafe as B
-import           Data.Int
 import qualified Data.Vector.Unboxed.Mutable as MV
 import           Formatting
 import           Formatting.Clock
@@ -18,13 +17,13 @@ main = do
   fprint ("reading file into bytestring took " % timeSpecs % "\n") start end
 
   start1 <- getTime Monotonic
-  kay :: MV.IOVector Int32 <- MV.new 1058
+  kay :: MV.IOVector Int <- MV.new 1058
   mapLinesM (\x line -> MV.write kay x (readInt line)) content
   end1 <- getTime Monotonic
   fprint ("parsing " % int % " lines took " % timeSpecs % "\n") (MV.length kay) start1 end1
 
   start2 <- getTime Monotonic
-  let while !(counter::Int) !(ind::Int32) = do
+  let while !(counter::Int) !(ind::Int) = do
         if ind < fromIntegral (MV.length kay)
           then let i = fromIntegral ind
                in do curr <- MV.read kay i
@@ -56,7 +55,7 @@ mapLinesM cons xs = go 0 xs
 
 -- | Reading directly without returning a remainder or Maybe is
 -- faster, also inlining. It shaves off time for reading ints.
-readInt :: S.ByteString -> Int32
+readInt :: S.ByteString -> Int
 readInt as
   | S.null as = 0
   | otherwise =
@@ -65,7 +64,7 @@ readInt as
       43 -> loop False 0 0 (B.unsafeTail as)
       _ -> loop False 0 0 as
   where
-    loop :: Bool -> Int -> Int32 -> S.ByteString -> Int32
+    loop :: Bool -> Int -> Int -> S.ByteString -> Int
     loop neg !i !n !ps
       | S.null ps = end neg i n
       | otherwise =
