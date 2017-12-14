@@ -41,6 +41,9 @@ Using the `mapM (\(x, line) -> ...) (zip [0..] (S.lines ...))` pattern
 is less efficient than the more direct `mapLinesM`. Adding `INLINE`
 also speeds it up, fairly obviously.
 
+I haven't tried compiling via LLVM. I'm unable to get the backend to
+work on OS X. Someone else can try that.
+
 Overall the programs run in the same order of magnitude in speed.
 
 ## Haskell runtime stats
