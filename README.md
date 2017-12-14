@@ -34,8 +34,8 @@ You have to remember to annotate your integers, otherwise
 while !(counter::Int) !(ind::Int) = do
 ```
 
-without the annotations is inferred as an `Integer`, which is about 5x
-slower. GHC warns about this.
+without the annotations is inferred as an `Integer`, which is about **5x
+slower. GHC warns about this.**
 
 Using the `mapM (\(x, line) -> ...) (zip [0..] (S.lines ...))` pattern
 is less efficient than the more direct `mapLinesM`. Adding `INLINE`
