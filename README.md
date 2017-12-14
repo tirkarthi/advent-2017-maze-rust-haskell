@@ -4,6 +4,10 @@ http://adventofcode.com/2017/day/5
 
 Haskell compared with Rust
 
+## Intro
+
+Sam H. from Reddit [asked /r/haskell why](https://www.reddit.com/r/haskell/comments/7iumzb/haskell_mutable_collections_low_performance_vs/) his Haskell code, while not slow, was outperformed 10x faster by Rust. So I just took his Rust program and made a direct translation to Haskell.
+
 ## How to run
 
 Rust
