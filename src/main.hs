@@ -23,7 +23,7 @@ main = do
   fprint ("parsing " % int % " lines took " % timeSpecs % "\n") (MV.length kay) start1 end1
 
   start2 <- getTime Monotonic
-  let while !(counter) !(ind) = do
+  let while !(counter::Int) !(ind::Int) = do
         if ind < fromIntegral (MV.length kay)
           then let i = fromIntegral ind
                in do curr <- MV.read kay i
