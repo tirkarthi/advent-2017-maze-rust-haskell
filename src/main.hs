@@ -53,7 +53,6 @@ mapLinesM cons xs = go 0 xs
           let sample = S.take index str
           unless (S.null sample) (cons line sample)
           go (line + 1) (S.drop (index+1) str)
-{-# INLINE mapLinesM #-}
 
 -- | Reading directly without returning a remainder or Maybe is
 -- faster, also inlining. It shaves off time for reading ints.
@@ -82,4 +81,3 @@ readInt as
     end _ 0 _ = 0
     end True _ n = negate n
     end _ _ n = n
-{-# INLINE readInt #-}
