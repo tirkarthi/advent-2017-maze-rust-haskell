@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables, BangPatterns, GADTs, OverloadedStrings #-}
+{-# LANGUAGE BangPatterns, OverloadedStrings #-}
 module Main (main) where
 
 import           Control.Monad
@@ -17,13 +17,14 @@ main = do
   fprint ("reading file into bytestring took " % timeSpecs % "\n") start end
 
   start1 <- getTime Monotonic
-  kay :: MV.IOVector Int <- MV.new 1058
+  kay <- MV.new 1058
   mapLinesM (\x line -> MV.write kay x (readInt line)) content
   end1 <- getTime Monotonic
   fprint ("parsing " % int % " lines took " % timeSpecs % "\n") (MV.length kay) start1 end1
 
   start2 <- getTime Monotonic
-  let while !(counter::Int) !(ind::Int) = do
+  let while :: Int -> Int -> IO Int
+      while !counter !ind = do
         if ind >= fromIntegral (MV.length kay) || ind < 0
           then pure counter
           else
@@ -36,7 +37,7 @@ main = do
                        then curr - 1
                        else curr + 1)
                   while (counter + 1) (ind + curr)
-  !counter <- while 0 0
+  counter <- while 0 0
   end2 <- getTime Monotonic
   fprint (int % ", is the answer, it took " % timeSpecs % "\n") counter start2 end2
 
