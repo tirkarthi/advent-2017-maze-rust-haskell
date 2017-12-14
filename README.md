@@ -13,16 +13,18 @@ Sam H. from Reddit [asked /r/haskell why](https://www.reddit.com/r/haskell/comme
 Rust
 
     $ cargo run -q
-    reading file into bytestring took 531 us
+    reading file into bytestring took 620 us
     parsing 1058 lines took 25 us
-    25608482, is the answer, it took 117 ms
+    25608482, is the answer, it took 119 ms
 
 Haskell
 
     $ stack build --verbosity silent && stack exec haskell
-    reading file into bytestring took 225.37 us
-    parsing 1058 lines took 58.80 us
-    25608482, is the answer, it took 98.74 ms
+    reading file into bytestring took 209.75 us
+    parsing 1058 lines took 58.78 us
+    25608482, is the answer, it took 91.48 ms
+    
+(Both programs have been ran until they repeat a lower bound.)
 
 ## Haskell analysis
 
