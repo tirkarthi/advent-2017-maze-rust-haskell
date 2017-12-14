@@ -2,8 +2,10 @@
 module Main (main) where
 
 import           Control.Monad
+import           Control.Monad.ST
 import qualified Data.ByteString as S
 import qualified Data.ByteString.Unsafe as B
+import qualified Data.Vector.Unboxed as V
 import qualified Data.Vector.Unboxed.Mutable as MV
 import           Formatting
 import           Formatting.Clock
@@ -15,35 +17,44 @@ main = do
   content <- S.readFile "xmas5.txt"
   end <- getTime Monotonic
   fprint ("reading file into bytestring took " % timeSpecs % "\n") start end
-
   start1 <- getTime Monotonic
-  kay <- MV.new 1058
-  mapLinesM (\x line -> MV.write kay x (readInt line)) content
+  let kay = runST (do kay' <- MV.new 1058
+                      mapLinesM (\x line -> MV.write kay' x (readInt line)) content
+                      V.unsafeFreeze kay')
   end1 <- getTime Monotonic
-  fprint ("parsing " % int % " lines took " % timeSpecs % "\n") (MV.length kay) start1 end1
-
+  fprint
+    ("parsing " % int % " lines took " % timeSpecs % "\n")
+    (V.length kay)
+    start1
+    end1
   start2 <- getTime Monotonic
-  let while :: Int -> Int -> IO Int
-      while !counter !ind = do
-        if ind >= fromIntegral (MV.length kay) || ind < 0
-          then pure counter
-          else
-            let i = fromIntegral ind
-            in do curr <- MV.read kay i
-                  MV.write
-                    kay
-                    i
-                    (if curr >= 3
-                       then curr - 1
-                       else curr + 1)
-                  while (counter + 1) (ind + curr)
-  counter <- while 0 0
+
+  let !result =
+        runST
+          (do kay' <- V.unsafeThaw kay
+              let while !counter !ind = do
+                    if ind >= fromIntegral (V.length kay) || ind < 0
+                      then pure counter
+                      else let i = fromIntegral ind
+                           in do curr <- MV.read kay' i
+                                 MV.write
+                                   kay'
+                                   i
+                                   (if curr >= 3
+                                      then curr - 1
+                                      else curr + 1)
+                                 while (counter + 1) (ind + curr)
+              while (0::Int) (0::Int))
   end2 <- getTime Monotonic
-  fprint (int % ", is the answer, it took " % timeSpecs % "\n") counter start2 end2
+  fprint
+    (int % ", is the answer, it took " % timeSpecs % "\n")
+    result
+    start2
+    end2
 
 -- | This lines iterator is faster than iterating with @lines@. It
 -- shaves off some time for reading the ints in.
-mapLinesM :: (Int -> S.ByteString -> IO ()) -> S.ByteString -> IO ()
+mapLinesM :: (Int -> S.ByteString -> ST s ()) -> S.ByteString -> ST s ()
 mapLinesM cons xs = go 0 xs
   where
     go !line str =
