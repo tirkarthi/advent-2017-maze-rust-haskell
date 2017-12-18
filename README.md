@@ -23,6 +23,15 @@ Haskell
     reading file into bytestring took 209.75 us
     parsing 1058 lines took 47.76 us
     25608482, is the answer, it took 90.28 ms
+    
+D 
+
+```
+$ ldc -03 maze.d
+$ ./maze
+parsing file took 284 us
+25608482 is the answer, it took 69 ms
+```
 
 (Both programs have been ran until they repeat a lower bound.)
 
